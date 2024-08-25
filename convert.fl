@@ -1,0 +1,80 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0308
+header_name {.h}
+code_name {.cxx}
+Function {main()} {open return_type int
+} {
+  code {ConvertirUI ui;
+return Fl::run();} {}
+}
+
+class ConvertirUI {open
+} {
+  decl {\#include <string>} {private local
+  }
+  decl {\#include <sstream>} {private local
+  }
+  decl {\#include <iomanip>} {private local
+  }
+  Function {ConvertirUI()} {open
+  } {
+    Fl_Window {} {
+      label {Convesor Hpa a InHg} open
+      xywh {190 213 304 169} type Double visible
+    } {
+      Fl_Input inputHpa {
+        xywh {94 29 115 25} align 8
+      }
+      Fl_Output outputInHg {
+        xywh {94 59 114 25} align 8 textfont 1 textcolor 4 deactivate
+      }
+      Fl_Button calcButton {
+        label Calcular
+        callback {convertir()}
+        xywh {30 110 115 25}
+      }
+      Fl_Button clearButton {
+        label Limpiar
+        callback {limpiar()}
+        xywh {155 110 115 25}
+      }
+      Fl_Box {} {
+        label Hpa
+        xywh {52 29 25 25} labelfont 1
+      }
+      Fl_Box {} {
+        label InHg
+        xywh {55 59 25 25} labelfont 1
+      }
+    }
+    code {w->show();} {}
+  }
+  Function {limpiar()} {return_type void
+  } {
+    code {inputHpa->value("");
+outputInHg->value("");} {}
+  }
+  Function {hpaToInHg(const double &hpa, double &inHg)} {open return_type double
+  } {
+    code {const double conversionFactor = 0.02952998751;
+inHg = hpa * conversionFactor;
+return inHg;} {}
+  }
+  Function {convertir()} {open
+  } {
+    code {std::string hpaStr = inputHpa->value();
+double hpa, inHg;
+
+try {
+    hpa = std::stod(hpaStr);
+    hpaToInHg(hpa, inHg);
+    
+    std::stringstream ss;
+    ss << std::fixed << std::setprecision(2) << inHg;
+    outputInHg->value(ss.str().c_str());
+} catch (const std::exception& e) {
+    outputInHg->value("Error");
+}} {selected
+    }
+  }
+}
